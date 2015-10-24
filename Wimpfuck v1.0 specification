@@ -1,0 +1,138 @@
+====WimpFuck v1.0 specification====
+(c) Filipkovarik https://plus.google.com/110634539236392530518
+
+A wimpmode for brainfuck.
+
+Interpreter syntax highlighting recommended (settings mode, comments, literals, strings)
+
+Brainfuck commands included if not overwritten, excluding . and , which are included in "r" and "w"
+
+Language is Turing-complete through reduction from Brainfuck
+
+===Running enviroment===
+
+Custom valued tape (interpreter settings?)
+
+Argument stack: stack with values the same size as tape
+(P) - short for "value popped from argument stack" or "value to be pushed onto argument stack"
+
+Randomizer queue: when empty or shorter than requested and a request for random data occurs, put bits of random data such that the interpreter doesn't trim/waste any. 
+(=> bigger randomization cycle)
+
+===Execution modes===
+
+Normal mode (everything but defined commands is NOP)
+Settings mode (everything but defined commands for Settings mode is NOP)
+Comment mode (everything but $ is NOP)
+
+===Interpreter input===
+EOFs are interpreter defined; when read in Queue 0, EOF is based on interpreter settings; if no settings, then EOF=0
+Queue 0: pre-written input, editable at runtime, can contain EOFs
+Queue 1: is appended to using a input window (for example JavaScript alert), on each input an EOF is added
+Queue number defaults to interpreter config, if none, then 0
+===Commands===
+
+V         Push current cell to (P)
+A         Set current cell to (P)
+C         Clear argument stack
+P         Discard (P)
+
+0-9 a-f   Hexadecimal literals to push onto the argument stack
+'         Next character's ASCII value to be inserted into current cell
+"         Up until next ", push ASCII values of characters onto the argument stack
+Q         Equivalent to ")wR(6Q", pushing the string to the argument stack ltr
+
+?         From LSB, puts random bits into current cell, defaults to 8, changed by ? in Settings mode
+n         parse, by base/radix (P) or 10, (P) and push it onto the argument stack rtl
+
+S         Enable settings mode
+$         Toggle comment mode (everything else is NOP)
+
+==Computation==
+
+\         Left rotate (P)
+B         Change (P) to its LSB
++         (P) else 1, add to (P), wrapping
+-         (P) else 1, substract from (P), wrapping
+*         (P) else 2, multiply (P), modulo 256, overflow goes to argument stack (but see Settings mode-r)
+/         (P) else 2, integer-divide (P), remainder goes to argument stack (but see Settings mode-r)
+%         set (P) to (P) modulo (P) or 2
+G         set (P) to (P)>(P)?1:0
+L         set (P) to (P)<(P)?1:0
+E         set (P) to (P)==(P)?1:0
+N         set (P) to not (P)
+
+==Input/Output==
+
+r         Read from input queue to argument stack; if pre-written input(0), read a character, if EOF-splitted(1), read until EOF (ASCII)
+w         Write to STDOUT (P) (ASCII)
+R         Read until EOF, interpret as number, radix/base is (P) or 10, the number is trimmed modulo 256, the reduced number is put into the current cell, and if the r setting is on, then take [tape value size] more bits from what was left over from modulo trimming, and put them onto the argument stack
+W         Write number (P), radix/base is (P) (popped first) or 10
+
+
+==Settings mode==
+
+S         Disable settings mode
+i         (P): set number of queue to be read from
+r         (P): set if multiply overflow and dividing remainder: 
+          get discarded (0) or go to argument stack (everything else)
+?         Set the number of bits that the ? command in normal mode takes from the randomizer queue, number from 1 to 8, if outside NOP/Error (interpreter setting?)
+
+I         JUST A CONCEPT; (P): if 0, maintain definition, if 1, set first inputs and outputs of computational functions and outputs of hex literals to current cell instead of argument stack; would redirect more to using the tape and WimpFuck being a less of a stack with a tape and more a tape with a stack
+
+==Control commands==
+All conditions are, unless otherwise specified, checked before execution, values are popped everytime
+Matching "(" and ")" denote the code to be executed by the loop
+"(" and "D" can be considered to, for one character, change the mode to "control mode"
+(R ... )  repeats the code (P) times
+(C ... )  executes the code only if (P)>0
+(Z ... )  repeats the code stopping when (P)!=0
+(W ... )  repeats the code stopping when (P)==0(may include empty argument stack,see top)
+(DX ... ) repeats the code once before starting the control command (X ... ) where X is 
+          a placeholder for a specific loop/condition other from D
+(X ... ), { ... } if X isn't any of above commands, then NOP; X still gets executed (code formatting)
+
+Command list: normal, settings, control, input/output, computation
+?, ?, $, +, -, *, /,' ," ,\ ,% , 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d, e, f, i, n, r, r, w, B, C, (C, (D, E, G, L, N, S, S, P, R, (R, V, W, (W, (Z
+
+
+
+
+
+===Examples===
+
+Avoiding undefined behaviour
+
+Quine
+
+Q6(Rw)
+
+Q        push characters of ")wR(6Q" to argument stack
+  6      push 6 to argument stack
+   (R )  (P) times repeat:
+     w   write (P) to STDOUT
+output: "Q6(Rw)"
+
+
+Cat
+
+SiS(ZrwV)
+
+         set 0 in current cell
+S         enable settings mode
+ i        set queue number
+  S       disable settings mode
+   (Z   ) repeat while zero:
+     r    read (in this case a character from queue 0) to argument stack
+      w   write (P)
+       V  push current cell (0) onto argument stack
+
+Hello, World!
+
+"!dlroW ,olleH"0(ZrwV)
+
+Comment
+
+$This wouldn't execute$However this would
+
+
