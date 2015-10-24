@@ -60,7 +60,10 @@ B         Change (P) to its LSB
 G         set (P) to (P)>(P)?1:0
 L         set (P) to (P)<(P)?1:0
 E         set (P) to (P)==(P)?1:0
-N         set (P) to not (P)
+!         set (P) to not (P)
+&         set (P) to (P) and (P)
+|         set (P) to (P) or (P)
+^         set (P) to (P) xor (P)
 
 ==Input/Output==
 
@@ -78,7 +81,7 @@ r         (P): set if multiply overflow and dividing remainder:
           get discarded (0) or go to argument stack (everything else)
 ?         Set the number of bits that the ? command in normal mode takes from the randomizer queue, number from 1 to 8, if outside NOP/Error (interpreter setting?)
 
-I         JUST A CONCEPT; (P): if 0, maintain definition, if 1, set first inputs and outputs of computational functions and outputs of hex literals to current cell instead of argument stack; would redirect more to using the tape and WimpFuck being a less of a stack with a tape and more a tape with a stack
+I         JUST A CONCEPT, feel free to use as interpreter setting; (P): if 0, maintain definition, if 1, set first inputs and outputs of computational functions and outputs of hex literals to current cell instead of argument stack; would redirect more to using the tape and WimpFuck being a less of a stack with a tape and more a tape with a stack
 
 ==Control commands==
 All conditions are, unless otherwise specified, checked before execution, values are popped everytime
@@ -93,7 +96,7 @@ Matching "(" and ")" denote the code to be executed by the loop
 (X ... ), { ... } if X isn't any of above commands, then NOP; X still gets executed (code formatting)
 
 Command list: normal, settings, control, input/output, computation
-?, ?, $, +, -, *, /,' ," ,\ ,% , 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d, e, f, i, n, r, r, w, B, C, (C, (D, E, G, L, N, S, S, P, R, (R, V, W, (W, (Z
+&, |, ^, ?, ?, !, $, +, -, *, /,' ," ,\ ,% , 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, a, b, c, d, e, f, i, n, r, r, w, B, C, (C, (D, E, G, L, S, S, P, R, (R, V, W, (W, (Z
 
 
 
@@ -118,7 +121,6 @@ Cat
 
 SiS(ZrwV)
 
-
 S         enable settings mode
  i        set queue number
   S       disable settings mode
@@ -134,5 +136,4 @@ Hello, World!
 Comment
 
 $This wouldn't execute$However this would
-
 
