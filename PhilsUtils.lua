@@ -1,4 +1,3 @@
---A Lua API I made for my ComputerCraft programs
 function shuffleParams(f,t)
 local function anonymous (...)
   local arg2={}
@@ -17,6 +16,12 @@ return f(unpack(t),...)
 end
 return anonymous
 end
+
+function identity(a)
+return a
+end
+
+id=identity
 
 function HanoiTConcat(a)
 local strings=a or {}
