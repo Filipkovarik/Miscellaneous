@@ -1,7 +1,8 @@
 local configPath=shell.resolve("GitConfig")
 local confLines={}
 local lines=io.lines(configPath)
-for url in lines do
+for username in lines do
+ local url="https://raw.githubusercontent.com/"..username.."/"..lines().."/master/"..lines()
  local req = http.get(url)
  print("Requesting from "..url)
  local code = req.getResponseCode()
@@ -19,3 +20,4 @@ for url in lines do
  targetF.close()
  print("Closed both file streams")
 end
+
