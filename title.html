@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+		</title>
+		<script>
+		title = location.search.match(/title=(.+?)(&|$)/);
+		var span;
+		if (title === null) title = "title.htm?title=YOUR.TEXT.HERE"; else title = decodeURIComponent(title[1]);
+		function throttle(func, ms){last = 0; return function(){ let now = new Date(); if(now - last <= ms) return false; last = now; func.apply(this,arguments); }}
+		update = throttle(function update(){
+			console.log("update()")
+			if (span) span.style.fontSize = ~~(window.innerWidth / title.length / 0.61 - 0.5) + "px";
+		}, 150)
+		function text(newtitle){
+			if (newtitle !== undefined) title = newtitle;
+			console.log(`bodyText(${[].slice.call(arguments)})`)
+			if (span === undefined) span = document.body.getElementsByTagName("span")[0];
+			document.getElementsByTagName("title")[0].innerText = title;
+			if(newtitle === undefined) span.innerText = title;
+			span.contentEditable = true;
+			update()
+		}
+		
+		</script>
+	</head>
+	<body onload="text()" onresize="update()">
+		<span style="font-family: Courier New, monospace" onkeyup="text(this.innerText);"></span>
+	</body>
+</html>
