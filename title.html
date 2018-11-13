@@ -8,12 +8,14 @@
 		var span;
 		if (title === null) title = "title.htm?title=YOUR.TEXT.HERE"; else title = decodeURIComponent(title[1]);
 		function throttle(func, ms){last = 0; return function(){ let now = new Date(); if(now - last <= ms) return false; last = now; func.apply(this,arguments); }}
-		update = throttle(function update(){
-			console.log("update()")
-			if (span) span.style.fontSize = ~~(window.innerWidth / title.length / 0.61 - 0.5) + "px";
+		update = throttle(function update(newtitle){
+			console.log("update("+newtitle?'"'+newtitle+'"':''+")")
+			if (!span) return false;
+			if (newtitle) title = newtitle;
+			span.style.fontSize = ~~(window.innerWidth / title.length / 0.61 - 0.5) + "px";
 		}, 150)
 		function text(newtitle){
-			if (newtitle !== undefined) title = newtitle;
+			if (newtitle !== undefined) {title = newtitle; location.search = "?title=" + encodeURIComponent(title);}
 			console.log(`bodyText(${[].slice.call(arguments)})`)
 			if (span === undefined) span = document.body.getElementsByTagName("span")[0];
 			document.getElementsByTagName("title")[0].innerText = title;
@@ -25,6 +27,6 @@
 		</script>
 	</head>
 	<body onload="text()" onresize="update()">
-		<span style="font-family: Courier New, monospace" onkeyup="text(this.innerText);"></span>
+		<span style="font-family: Courier New, monospace" onblur="text(this.innerText);" onkeyup="update(this.innerText)" onload="focus()"></span>
 	</body>
 </html>

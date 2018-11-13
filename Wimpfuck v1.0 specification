@@ -64,7 +64,7 @@ E         set (P) to (P)==(P)?1:0
 &         set (P) to (P) and (P)
 |         set (P) to (P) or (P)
 ^         set (P) to (P) xor (P)
-
+(the latter four are bitwise)
 ==Input/Output==
 
 r         Read from input queue to argument stack; if pre-written input(0), read a character, if EOF-splitted(1), read until EOF (ASCII)
@@ -82,7 +82,7 @@ r         (P): set if multiply overflow and dividing remainder:
 ?         Set the number of bits that the ? command in normal mode takes from the randomizer queue, number from 1 to 8, if outside NOP/Error (interpreter setting?)
 
 I         JUST A CONCEPT, feel free to use as interpreter setting; (P): if 0, maintain definition, if 1, set first inputs and outputs of computational functions and outputs of hex literals to current cell instead of argument stack; would redirect more to using the tape and WimpFuck being a less of a stack with a tape and more a tape with a stack
-
+T         JUST A CONCEPT; (P): if 0, maintain definition, if 1, disable just *,/,%; if 2, disable +,-,*,/,%,G; if 3, disable +,-,*,/,%,G,L,E; if 4, disable +,-,*,/,%,G,L,E,&,^;
 ==Control commands==
 All conditions are, unless otherwise specified, checked before execution, values are popped everytime
 Matching "(" and ")" denote the code to be executed by the loop
